@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>图片懒加载测试</title>
+    <style>
+        #imgs-com{ padding: 20px;}
+        #imgs-com img{ display: block; margin-bottom: 10px;}
+    </style>
+</head>
+<body>
+
+<div id="imgs-com">
+    <img src="imgs/lazyloading.gif" data-src="imgs/1.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/2.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/3.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/4.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/5.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/6.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/7.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/8.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/9.jpg" class="lazy-img" />
+    <img src="imgs/lazyloading.gif" data-src="imgs/10.jpg" class="lazy-img" />
+</div>
+
+<!--图片懒加载-->
+<script type="text/javascript">
+    window.onload= function() {
+        loadImg:{
+            let lazyImg = document.getElementsByClassName("lazy-img"),
+                lazyImgNum = lazyImg.length,
+                n = 0;
+            lazyload();
+            //window.onscroll = lazyload;
+            function lazyload() { //监听页面滚动事件
+                let seeHeight = document.documentElement.clientHeight, //可见区域高度
+                    scrollTop = document.documentElement.scrollTop || document.body.scrollTop; //滚动条距离顶部高度
+                for (let i = n; i < lazyImgNum; i++) {
+                    if (lazyImg[i].offsetTop < seeHeight + scrollTop) {
+                        if (lazyImg[i].className='lazy-img') {
+                            lazyImg[i].src = lazyImg[i].getAttribute("data-src");
+                        }
+                        n = i + 1;
+                    }
+                }
+            }
+            //写一个节流函数 减少内存消耗
+            // fun 要执行的函数
+            // delay 延迟
+            // time 在time时间内必须执行一次
+            function throttle(fun, delay, time) {
+                var timeout,
+                    startTime = new Date();
+                return function() {
+                    var context = this,
+                        args = arguments,
+                        curTime = new Date();
+                    clearTimeout(timeout);
+                    // 如果达到了规定的触发时间间隔，触发 handler
+                    if (curTime - startTime >= time) {
+                        fun.apply(context, args);
+                        startTime = curTime;
+                    } else {
+                        timeout = setTimeout(fun, delay);
+                    }
+                };
+            };
+            window.addEventListener('scroll',throttle(lazyload,500,1000));
+        }
+    }
+</script>
+
+</body>
+</html>
